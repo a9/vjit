@@ -23,7 +23,6 @@ export class EventChannel extends Disposable {
     this.host.addEventListener(type, fn, options)
 
     if (typeof options === 'object' && options.once) {
-      this.host.removeEventListener(type, fn)
       return
     }
 
