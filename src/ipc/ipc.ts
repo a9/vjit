@@ -77,17 +77,19 @@ const serve = <R>(fetch: Fetch, routes: R) => {
 
       const context = createContext(request, path)
 
-      if (typeof value === 'object') {
-        for (const [method, handler] of Object.entries(value as object)) {
-          if (request.method.toLowerCase() === method.toLowerCase()) {
-            return handler(request, context)
+      if (context) {
+        if (typeof value === 'object') {
+          for (const [method, handler] of Object.entries(value as object)) {
+            if (request.method.toLowerCase() === method.toLowerCase()) {
+              return handler(request, context)
+            }
           }
         }
-      }
 
-      if (typeof value === 'function') {
-        const handler = value
-        return handler(request, context)
+        if (typeof value === 'function') {
+          const handler = value
+          return handler(request, context)
+        }
       }
     }
 
