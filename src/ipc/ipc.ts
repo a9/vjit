@@ -148,7 +148,7 @@ export class Ipc extends Disposable {
 
     const id = generateId(16)
 
-    this.response.on(id, (e) => resolve((e as CustomEvent<Response>).detail))
+    this.response.once(id, (e) => resolve((e as CustomEvent<Response>).detail))
 
     const req = new Request(input, init)
     req.headers.set('x-request-id', id)

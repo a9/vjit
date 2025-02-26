@@ -9,7 +9,7 @@ export class EventChannel extends Disposable {
     this.namespace = namespace
   }
 
-  createType(name: string) {
+  type(name: string) {
     return `${this.namespace}:${name}`
   }
 
@@ -18,16 +18,25 @@ export class EventChannel extends Disposable {
     fn: (e: Event) => void,
     options?: boolean | AddEventListenerOptions,
   ) {
-    const type = this.createType(name)
+    const type = this.type(name)
 
     this.host.addEventListener(type, fn, options)
+
+    if (typeof options === 'object' && options.once) {
+      return
+    }
+
     this.disposes.push(() => {
       this.host.removeEventListener(type, fn)
     })
   }
 
+  once(name: string, fn: (e: Event) => void) {
+    return this.on(name, fn, { once: true })
+  }
+
   emit<T = unknown>(name: string, data?: T) {
-    const event = createEvent(this.createType(name), data)
+    const event = createEvent(this.type(name), data)
     this.host.dispatchEvent(event)
   }
 }
