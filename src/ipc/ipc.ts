@@ -20,7 +20,7 @@ export type Context<T> = {
 type RouteHandler<T extends string> = (
   req: Request,
   context: Context<T>,
-) => Response | void | Promise<Response | void>
+) => Response | Promise<Response>
 
 type HTTPMethod =
   | 'GET'
@@ -63,11 +63,11 @@ const createContext = <T extends string>(
   return context
 }
 
-type Fetch = (req: Request) => Response | void | Promise<Response | void>
+type Fetch = (req: Request) => Response | Promise<Response>
 
-const serve = <R>(fetch: Fetch, routes: R) => {
+const serve = <R>(fetch: Fetch, routes?: R) => {
   return (request: Request) => {
-    for (const [path, value] of Object.entries(routes as object)) {
+    for (const [path, value] of Object.entries((routes ?? {}) as object)) {
       if (value instanceof Response) {
         return value
       }
@@ -123,22 +123,23 @@ export class Ipc extends Disposable {
       return new Response('Not Found', { status: 404 })
     },
   }: {
-    routes: R
+    routes?: R
     fetch?: (req: Request) => Response | Promise<Response>
   }) {
     return this.handle(serve(fetch, routes))
   }
 
-  private handle(
-    fn: (req: Request) => Response | void | Promise<Response | void>,
-  ) {
+  private handle(fn: (req: Request) => Response | Promise<Response>) {
     this.request.on(this.id, async (e: Event) => {
       const request = (e as CustomEvent<Request>).detail
       const id = request.headers.get('x-request-id') as string
 
       const response = await fn(request)
+
       if (response instanceof Response) {
         this.response.emit(id, response)
+      } else {
+        throw new TypeError('The return value must be a Response')
       }
     })
   }
