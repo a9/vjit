@@ -1,0 +1,55 @@
+{
+  "name": "vjit",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    "./core": {
+      "import": "./dist/core.js",
+      "types": "./dist/core.d.ts",
+      "default": "./dist/core.js"
+    },
+    "./ipc": {
+      "import": "./dist/ipc.js",
+      "types": "./dist/ipc.d.ts",
+      "default": "./dist/ipc.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "core": [
+        "./dist/vite.d.ts"
+      ],
+      "ipc": [
+        "./dist/ipc.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "nanoid": "^5.1.2",
+    "path-to-regexp": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^22.13.5",
+    "prettier": "^3.5.2",
+    "prettier-plugin-classnames": "^0.7.6",
+    "prettier-plugin-merge": "^0.7.2",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "prettier-plugin-packagejson": "^2.5.8",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "tsup": "^8.4.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}
