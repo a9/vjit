@@ -98,27 +98,19 @@ const serve = <R>(fetch: Fetch, routes: R) => {
 }
 
 export class Ipc extends Disposable {
-  id: string
-  namespace: string
-  request: EventChannel
-  response: EventChannel
+  private id: string
+  // private namespace: string
+  private request: EventChannel
+  private response: EventChannel
   constructor(namespace = generateId(16)) {
     super()
     this.id = generateId(16)
-    this.namespace = namespace
+    // this.namespace = namespace
 
     this.request = new EventChannel(`${namespace}:request`)
     this.response = new EventChannel(`${namespace}:response`)
 
     this.disposes.push(this.request, this.response)
-  }
-
-  match<T extends string>(
-    request: Request,
-    path: Path | Path[],
-    options?: MatchOptions & ParseOptions,
-  ) {
-    return createContext<T>(request, path, options)
   }
 
   fetch(input: RequestInfo | URL, init?: RequestInit) {
